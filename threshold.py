@@ -46,7 +46,7 @@ data = {}
 
 # plt.figure(figsize=(15, 10))
 fig, ax = plt.subplots(1, 2, figsize=(15, 10))
-plt.subplots_adjust(left=0.1, bottom=0.25)
+plt.subplots_adjust(top=0.95, left=0.1, bottom=0.18)
 
 data['mask'] = ax[0].imshow(mask, cmap='coolwarm')
 ax[0].set_title('Mask')
