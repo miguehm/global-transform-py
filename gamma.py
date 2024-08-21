@@ -6,6 +6,10 @@ from matplotlib.widgets import Slider
 
 
 def create_lut(gamma: float):
+    """
+    Create a lut with gamma transformation
+    """
+
     gamma_inv = 1.0/gamma
     table = np.arange(256)  # array with values 0..255
 
@@ -26,6 +30,9 @@ def create_lut(gamma: float):
 
 
 def get_gamma(image, gamma: float):
+    """
+    Return an image with gamma transformation
+    """
 
     B, G, R = cv2.split(image)
 
