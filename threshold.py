@@ -9,6 +9,10 @@ matplotlib.use('TkAgg')
 
 
 def apply_threshold(image, threshold: int, invert=False):
+    """
+    Return image with threshold and its mask
+    """
+
     image_bw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     mask = np.zeros(image_bw.shape, dtype=np.uint8)
 
@@ -35,52 +39,52 @@ def apply_threshold(image, threshold: int, invert=False):
     return image_container, mask
 
 
-image = cv2.imread('avatar.jpg')
+def main():
+    image = cv2.imread('avatar.jpg')
+
+    threshold = 0.1
+
+    image_container, mask = apply_threshold(image, threshold, invert=False)
+
+    data = {}
+
+    # plt.figure(figsize=(15, 10))
+    fig, ax = plt.subplots(1, 2, figsize=(15, 10))
+    plt.subplots_adjust(top=0.95, left=0.1, bottom=0.18)
+
+    data['mask'] = ax[0].imshow(mask, cmap='coolwarm')
+    ax[0].set_title('Mask')
+
+    data['image_container'] = ax[1].imshow(image_container, cmap='gray')
+    ax[1].set_title('Result')
+
+    # Configuración de la barra deslizante
+    ax_slider = plt.axes([0.1, 0.1, 0.3, 0.03])
+    slider = Slider(ax_slider, 'Threshold', 0, 255, valinit=threshold)
+
+    # Crear las casillas de verificación
+    ax_check = plt.axes([0.45, 0.1, 0.05, 0.05])
+    check = CheckButtons(ax_check, labels=['Invert'])
+
+    def update(val):
+        threshold = slider.val
+        invert = check.get_status()[0]
+
+        image_container, mask = apply_threshold(image, threshold, invert)
+        data['mask'].set_data(mask)
+        data['image_container'].set_data(image_container)
+        # img_result.set_data(image_threshold)
+        fig.canvas.draw_idle()
+
+    slider.on_changed(update)
+
+    def check_update(label):
+        update(None)
+
+    check.on_clicked(check_update)
+
+    plt.show()
 
 
-threshold = 0.1
-
-image_container, mask = apply_threshold(image, threshold, invert=False)
-
-data = {}
-
-# plt.figure(figsize=(15, 10))
-fig, ax = plt.subplots(1, 2, figsize=(15, 10))
-plt.subplots_adjust(top=0.95, left=0.1, bottom=0.18)
-
-data['mask'] = ax[0].imshow(mask, cmap='coolwarm')
-ax[0].set_title('Mask')
-
-data['image_container'] = ax[1].imshow(image_container, cmap='gray')
-ax[1].set_title('Result')
-
-# Configuración de la barra deslizante
-ax_slider = plt.axes([0.1, 0.1, 0.3, 0.03])
-slider = Slider(ax_slider, 'Threshold', 0, 255, valinit=threshold)
-
-# Crear las casillas de verificación
-ax_check = plt.axes([0.45, 0.1, 0.05, 0.05])
-check = CheckButtons(ax_check, labels=['Invert'])
-
-
-def update(val):
-    threshold = slider.val
-    invert = check.get_status()[0]
-
-    image_container, mask = apply_threshold(image, threshold, invert)
-    data['mask'].set_data(mask)
-    data['image_container'].set_data(image_container)
-    # img_result.set_data(image_threshold)
-    fig.canvas.draw_idle()
-
-
-slider.on_changed(update)
-
-
-def check_update(label):
-    update(None)
-
-
-check.on_clicked(check_update)
-
-plt.show()
+if __name__ == '__main__':
+    main()
